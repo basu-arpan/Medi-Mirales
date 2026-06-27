@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medi-Miracles — Prescription Digitization</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark">Rx</span>
+        Medi-Miracles
+      </div>
+      <div class="nav-links">
+        <a href="#upload">Digitize a prescription</a>
+        <a href="#pilot">Pilot activity</a>
+      </div>
+    </div>
+  </div>
+
+  <section class="hero container">
+    <div>
+      <div class="eyebrow"><span class="dot"></span> OCR pipeline · OpenCV · Tesseract</div>
+      <h1>Turn a doctor's<br><em>handwriting</em> into<br>a clean record.</h1>
+      <p class="lede">Medi-Miracles reads handwritten prescriptions and converts them into structured, shareable digital records — built for clinic staff, not engineers.</p>
+      <div class="hero-stats">
+        <div>
+          <div class="stat-num">45s</div>
+          <div class="stat-label">avg. processing time<br>(was 8 min by hand)</div>
+        </div>
+        <div>
+          <div class="stat-num">+35%</div>
+          <div class="stat-label">extraction accuracy<br>from preprocessing</div>
+        </div>
+        <div>
+          <div class="stat-num">&lt;10m</div>
+          <div class="stat-label">staff onboarding<br>time in pilot</div>
+        </div>
+      </div>
+    </div>
+    <div class="pad-visual" aria-hidden="true">
+      <div class="pad-card back">
+        <div class="rx-mark">℞</div>
+        <div class="scrawl" style="width:60%"></div>
+        <div class="scrawl"></div>
+        <div class="scrawl"></div>
+        <div class="scrawl"></div>
+      </div>
+      <div class="pad-card front">
+        <div class="rx-mark">℞</div>
+        <div class="scrawl" style="width:50%"></div>
+        <div class="scrawl"></div>
+        <div class="scrawl"></div>
+        <div class="scrawl"></div>
+        <div class="qr-chip"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="upload">
+    <div class="container">
+      <div class="section-head">
+        <div class="eyebrow"><span class="dot"></span> Step 1</div>
+        <h2>Upload a scan</h2>
+        <p>Drop in a photo or scan of a handwritten prescription. The pipeline cleans the image, extracts the text, structures it, and generates a QR code — all in one pass.</p>
+      </div>
+
+      <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Upload prescription image">
+        <div class="dropzone-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 16V4M12 4l-4 4M12 4l4 4M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>Drag a prescription image here</h3>
+        <p>or click to browse your files</p>
+        <div class="formats">PNG · JPG · BMP · TIFF · WEBP — up to 16MB</div>
+        <input type="file" id="file-input" accept="image/png,image/jpeg,image/bmp,image/tiff,image/webp">
+      </div>
+
+      <div id="pipeline-section" style="display:none; margin-top: 36px;">
+        <div class="card-title">
+          <span>Processing pipeline</span>
+          <span id="pipeline-status" class="mono"></span>
+        </div>
+        <div class="pipeline-strip" id="pipeline-strip"></div>
+      </div>
+
+      <div id="results-section" style="display:none; margin-top: 40px;">
+        <div class="section-head" style="margin-bottom:0;">
+          <div class="eyebrow"><span class="dot"></span> Step 2</div>
+          <h2>Review the digitized record</h2>
+        </div>
+
+        <div class="results-grid">
+          <div class="card">
+            <div class="card-title">
+              <span>Original scan</span>
+            </div>
+            <img class="scan-preview" id="original-preview" src="" alt="Original prescription scan">
+          </div>
+
+          <div class="card">
+            <div class="card-title">
+              <span>Extracted record</span>
+              <span class="confidence-pill" id="confidence-pill">—</span>
+            </div>
+            <div id="structured-fields"></div>
+          </div>
+        </div>
+
+        <div class="results-grid" style="margin-top:24px;">
+          <div class="card">
+            <div class="card-title"><span>Medicines detected</span></div>
+            <div id="medicines-list"></div>
+          </div>
+          <div class="card">
+            <div class="card-title"><span>Raw OCR output</span></div>
+            <div class="raw-text-block" id="raw-text"></div>
+          </div>
+        </div>
+
+        <div class="qr-panel">
+          <img id="qr-image" src="" alt="QR code for this prescription record">
+          <div class="qr-text">
+            <h4>Contactless sharing is ready</h4>
+            <p>Scan this code on a patient's phone to share the record instantly — no app needed.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="pilot">
+    <div class="container">
+      <div class="section-head">
+        <div class="eyebrow"><span class="dot"></span> Pilot activity</div>
+        <h2>Recently processed records</h2>
+        <p>A running log of every prescription digitized during testing.</p>
+      </div>
+      <div class="card">
+        <table class="pilot-table" id="pilot-table">
+          <thead>
+            <tr><th>Patient</th><th>Processed</th><th>Time taken</th><th>Confidence</th><th></th></tr>
+          </thead>
+          <tbody id="pilot-tbody"></tbody>
+        </table>
+        <div class="empty-state" id="pilot-empty">No prescriptions processed yet — upload one above to get started.</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Medi-Miracles — built for clinic pilot testing · Python, Flask, OpenCV, Tesseract OCR
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

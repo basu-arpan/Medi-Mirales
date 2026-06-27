@@ -1,0 +1,10 @@
+Flask>=3.0
+pytesseract>=0.3.10
+opencv-python>=4.8
+numpy>=1.26
+Pillow>=10.0
+Werkzeug>=3.0
+
+# Note: QR generation uses OpenCV's built-in cv2.QRCodeEncoder (available in
+# opencv-contrib / opencv-python builds 4.5.4+), so no separate qrcode
+# package is required.

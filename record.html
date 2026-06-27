@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prescription Record — {{ record.record_id }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    body { padding-bottom: 40px; }
+    .record-page { max-width: 640px; margin: 0 auto; padding: 32px 20px; }
+    .record-header { text-align: center; margin-bottom: 28px; }
+    .record-id-tag {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-soft);
+      background: var(--paper-deep); display: inline-block; padding: 4px 10px;
+      border-radius: 99px; margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner" style="max-width:640px;">
+      <div class="brand"><span class="brand-mark">Rx</span> Medi-Miracles</div>
+    </div>
+  </div>
+
+  <div class="record-page">
+    <div class="record-header">
+      <h1 style="font-size:1.7rem;">Prescription record</h1>
+      <div class="record-id-tag">ID: {{ record.record_id }}</div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-title"><span>Patient details</span></div>
+      <div class="field-row"><span class="field-label">Patient</span><span class="field-value">{{ record.structured.patient_name or "Not recorded" }}</span></div>
+      <div class="field-row"><span class="field-label">Age / Sex</span><span class="field-value">{{ record.structured.age_sex or "—" }}</span></div>
+      <div class="field-row"><span class="field-label">Date</span><span class="field-value">{{ record.structured.date or "—" }}</span></div>
+      <div class="field-row"><span class="field-label">Doctor</span><span class="field-value">{{ record.structured.doctor_name or "Not recorded" }}</span></div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-title"><span>Medicines</span></div>
+      {% if record.structured.medicines and record.structured.medicines|length > 0 %}
+        {% for med in record.structured.medicines %}
+        <div class="med-item">
+          <div class="med-name">{{ med.name or med.raw_line }}</div>
+          <div class="med-meta">
+            {% if med.dosage %}<span>💊 {{ med.dosage }}</span>{% endif %}
+            {% if med.frequency %}<span>⏱ {{ med.frequency }}</span>{% endif %}
+            {% if med.duration %}<span>📅 {{ med.duration }}</span>{% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <p style="color:var(--ink-soft);">No medicines were automatically detected for this record.</p>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span>Original scan</span></div>
+      <img class="scan-preview" src="{{ record.original_image }}" alt="Original prescription scan">
+    </div>
+
+    <p style="text-align:center; font-size:0.78rem; color:var(--ink-soft); margin-top:24px;">
+      Digitized on {{ record.created_at[:10] }} · Medi-Miracles pilot system
+    </p>
+  </div>
+</body>
+</html>

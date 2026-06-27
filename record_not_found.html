@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Record not found — Medi-Miracles</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="container" style="padding-top:80px; text-align:center;">
+    <h1 style="font-size:1.8rem;">Record not found</h1>
+    <p style="color:var(--ink-soft); margin-top:12px;">
+      No prescription record exists for ID <code>{{ record_id }}</code>.
+      It may have been removed, or the QR code may be damaged.
+    </p>
+    <a href="/" class="btn btn-primary" style="margin-top:24px;">Go to Medi-Miracles home</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,18 @@
+__pycache__/
+*.pyc
+*.pyo
+
+# Runtime-generated content — keep the folders, not the contents
+app/static/uploads/*
+app/static/processed/*
+app/static/qrcodes/*
+app/static/records/*
+!app/static/uploads/.gitkeep
+!app/static/processed/.gitkeep
+!app/static/qrcodes/.gitkeep
+!app/static/records/.gitkeep
+
+.DS_Store
+*.log
+venv/
+.venv/
